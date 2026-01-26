@@ -26,4 +26,14 @@
 
 export { YelixDashboard, type YelixDashboardOptions } from './src/middleware.ts';
 export { DashboardAuth } from './src/auth.ts';
-export { DashboardStats, type EventData, type MiddlewareData, type EndpointStats, type MiddlewareStats } from './src/stats.ts';
+export { 
+  DashboardStats, 
+  type EventData, 
+  type MiddlewareData, 
+  type EndpointStats, 
+  type MiddlewareStats,
+  type LogData,
+  type Stats,
+  type EventResponse,
+  type RequestDetails,
+} from './src/stats.ts';

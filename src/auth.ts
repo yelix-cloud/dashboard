@@ -40,7 +40,7 @@ export class DashboardAuth {
   /**
    * Create authentication middleware
    */
-  middleware() {
+  middleware(): (c: Context, next: Next) => Promise<Response | void> {
     return async (c: Context, next: Next) => {
       const authHeader = c.req.header('Authorization');
 

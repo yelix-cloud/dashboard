@@ -47,6 +47,58 @@ export interface LogData {
   timestamp: number;
 }
 
+export interface Stats {
+  totalRequests: number;
+  uniqueEndpoints: number;
+  avgDuration: number;
+  maxDuration: number;
+  successCount: number;
+  errorCount: number;
+  uptime: number;
+}
+
+export interface EventResponse {
+  requestId: string;
+  timestamp: string;
+  method: string;
+  pathname: string;
+  duration?: string;
+  status?: number;
+  middlewares: MiddlewareData[];
+  log_count: number;
+}
+
+export interface RequestDetails {
+  request: {
+    requestId: string;
+    request_id: string;
+    method: string;
+    pathname: string;
+    status?: number;
+    duration?: string;
+    timestamp: string;
+    started_at: string;
+    url: string;
+  };
+  middleware: Array<{
+    middleware_name: string;
+    name: string;
+    middleware_count: number;
+    duration: string;
+    started_at: string;
+    timestamp: string;
+  }>;
+  logs: Array<{
+    request_id: string;
+    middleware_name: string;
+    name: string;
+    middleware_count: number;
+    messages: unknown[];
+    logged_at: string;
+    timestamp: string;
+  }>;
+}
+
 /**
  * Dashboard statistics engine
  */
@@ -190,7 +242,7 @@ export class DashboardStats {
   /**
    * Get overall statistics
    */
-  getStats() {
+  getStats(): Stats {
     const totalRequests = this.events.length;
     const successCount = this.events.filter((e) => e.status && e.status < 300).length;
     const errorCount = this.events.filter((e) => e.status && e.status >= 400).length;
@@ -217,7 +269,7 @@ export class DashboardStats {
   /**
    * Get recent events
    */
-  getEvents(limit: number = 50) {
+  getEvents(limit: number = 50): EventResponse[] {
     return this.events.slice(0, limit).map((e) => {
       // Count logs for this request
       const logCount = this.logs.filter((log) => log.requestId === e.requestId).length;
@@ -238,7 +290,7 @@ export class DashboardStats {
   /**
    * Get endpoint statistics
    */
-  getEndpoints() {
+  getEndpoints(): EndpointStats[] {
     return Array.from(this.endpoints.values())
       .sort((a, b) => b.lastCalled - a.lastCalled)
       .map((e) => ({
@@ -252,7 +304,7 @@ export class DashboardStats {
   /**
    * Get middleware statistics
    */
-  getMiddlewares() {
+  getMiddlewares(): MiddlewareStats[] {
     return Array.from(this.middlewares.values())
       .sort((a, b) => b.count - a.count)
       .map((m) => ({
@@ -266,7 +318,7 @@ export class DashboardStats {
   /**
    * Get request details by ID
    */
-  getRequestDetails(requestId: string) {
+  getRequestDetails(requestId: string): RequestDetails | null {
     const event = this.events.find((e) => e.requestId === requestId);
     if (!event) {
       return null;
