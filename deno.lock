@@ -1,0 +1,37 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@yelix/hono@~0.1.42": "0.1.42",
+    "jsr:@yelix/openapi@~0.1.17": "0.1.18",
+    "npm:hono@^4.11.3": "4.11.4",
+    "npm:hono@^4.9.6": "4.11.4",
+    "npm:zod@^4.0.14": "4.3.5"
+  },
+  "jsr": {
+    "@yelix/hono@0.1.42": {
+      "integrity": "f28ffb8b97dc114e006600254045ce98044376a4ec46f417b987dfb7538804e8",
+      "dependencies": [
+        "jsr:@yelix/openapi",
+        "npm:hono@^4.9.6",
+        "npm:zod"
+      ]
+    },
+    "@yelix/openapi@0.1.18": {
+      "integrity": "340e5dd8d644c37dca61e9ef10676d57609800e8457215f9fd7fcd6a3c81912b"
+    }
+  },
+  "npm": {
+    "hono@4.11.4": {
+      "integrity": "sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA=="
+    },
+    "zod@4.3.5": {
+      "integrity": "sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@yelix/hono@~0.1.42",
+      "npm:hono@^4.11.3"
+    ]
+  }
+}
