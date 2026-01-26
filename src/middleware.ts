@@ -10,6 +10,7 @@ export interface YelixDashboardOptions {
   path?: string;
   apiPath?: string;
   maxEvents?: number;
+  maxLogs?: number;
 }
 
 type AppWithEvents = YelixHono & {
@@ -29,13 +30,17 @@ export class YelixDashboard {
     const password = options.password || Deno.env.get('YELIX_DASHBOARD_PASSWORD') || 'admin123';
 
     this.auth = new DashboardAuth(username, password);
-    this.stats = new DashboardStats();
+    this.stats = new DashboardStats(
+      options.maxEvents || 100,
+      options.maxLogs || 10000
+    );
     this.options = {
       username,
       password,
       path: options.path || '/dashboard',
       apiPath: options.apiPath || '/api/dashboard',
       maxEvents: options.maxEvents || 1000,
+      maxLogs: options.maxLogs || 10000,
     };
   }
 

@@ -104,12 +104,17 @@ export interface RequestDetails {
  */
 export class DashboardStats {
   private events: EventData[] = [];
-  private maxEvents: number = 1000;
+  private maxEvents: number;
   private endpoints: Map<string, EndpointStats> = new Map();
   private middlewares: Map<string, MiddlewareStats> = new Map();
   private logs: LogData[] = [];
-  private maxLogs: number = 10000;
+  private maxLogs: number;
   private startTime: number = Date.now();
+
+  constructor(maxEvents: number = 100, maxLogs: number = 10000) {
+    this.maxEvents = maxEvents;
+    this.maxLogs = maxLogs;
+  }
 
   /**
    * Handle request.start event

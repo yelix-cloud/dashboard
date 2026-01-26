@@ -1,6 +1,6 @@
 {
   "name": "@yelix/dashboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Live dashboard for monitoring Yelix framework events with authentication",
   "license": "MIT",
   "keywords": [
