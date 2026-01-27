@@ -715,6 +715,8 @@ export const DASHBOARD_HTML = `<!DOCTYPE html>
             const body = request.body ? (typeof request.body === 'string' ? parseJson(request.body) : request.body) : null;
             const queryParams = request.query_params ? (typeof request.query_params === 'string' ? parseJson(request.query_params) : request.query_params) : {};
             const pathParams = request.path_params ? (typeof request.path_params === 'string' ? parseJson(request.path_params) : request.path_params) : {};
+            const responseBody = request.response_body ? (typeof request.response_body === 'string' ? parseJson(request.response_body) : request.response_body) : null;
+            const responseHeaders = request.response_headers ? (typeof request.response_headers === 'string' ? parseJson(request.response_headers) : request.response_headers) : {};
             
             return \`
                 <!-- Request Overview -->
@@ -763,10 +765,12 @@ export const DASHBOARD_HTML = `<!DOCTYPE html>
 
                 <!-- Tabs -->
                 <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
-                    <nav class="flex space-x-8">
-                        <button class="tab-button active" data-tab="headers">Headers</button>
-                        <button class="tab-button" data-tab="body">Body</button>
+                    <nav class="flex space-x-8 overflow-x-auto">
+                        <button class="tab-button active" data-tab="headers">Request Headers</button>
+                        <button class="tab-button" data-tab="body">Request Body</button>
                         <button class="tab-button" data-tab="query">Query & Params</button>
+                        <button class="tab-button" data-tab="response-headers">Response Headers</button>
+                        <button class="tab-button" data-tab="response">Response Body</button>
                         <button class="tab-button" data-tab="middleware">Middleware</button>
                         <button class="tab-button" data-tab="logs">Logs</button>
                     </nav>
@@ -774,25 +778,29 @@ export const DASHBOARD_HTML = `<!DOCTYPE html>
 
                 <!-- Tab Content -->
                 <div id="tabContent">
-                    \${renderHeadersTab(headers)}
-                    \${renderBodyTab(body, request.body_type)}
+                    \${renderHeadersTab(headers, 'request')}
+                    \${renderBodyTab(body, request.body_type, 'request')}
                     \${renderQueryTab(queryParams, pathParams)}
+                    \${renderHeadersTab(responseHeaders, 'response')}
+                    \${renderBodyTab(responseBody, request.response_body_type, 'response')}
                     \${renderMiddlewareTab(middleware, logs)}
                     \${renderLogsTab(logs)}
                 </div>
             \`;
         }
 
-        function renderHeadersTab(headers) {
-            const headersHtml = Object.entries(headers).map(([key, value]) => \`
+        function renderHeadersTab(headers, type = 'request') {
+            const headersHtml = Object.entries(headers || {}).map(([key, value]) => \`
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                     <td class="px-4 py-2 font-mono text-sm font-semibold text-gray-900 dark:text-gray-100">\${escapeHtml(key)}</td>
                     <td class="px-4 py-2 font-mono text-sm break-all text-gray-900 dark:text-gray-100">\${escapeHtml(String(value))}</td>
                 </tr>
             \`).join('');
             
+            const panelName = type === 'response' ? 'response-headers' : 'headers';
+            
             return \`
-                <div class="tab-panel" data-panel="headers">
+                <div class="tab-panel \${type === 'response' ? 'hidden' : ''}" data-panel="\${panelName}">
                     <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                         <table class="min-w-full">
                             <thead class="bg-gray-50 dark:bg-gray-800">
@@ -810,22 +818,24 @@ export const DASHBOARD_HTML = `<!DOCTYPE html>
             \`;
         }
 
-        function renderBodyTab(body, bodyType) {
+        function renderBodyTab(body, bodyType, type = 'request') {
             if (!body && bodyType !== 'json' && bodyType !== 'text') {
+                const panelName = type === 'response' ? 'response' : 'body';
                 return \`
-                    <div class="tab-panel hidden" data-panel="body">
-                        <div class="text-center py-8 text-gray-500 dark:text-gray-400">No request body</div>
+                    <div class="tab-panel \${type === 'response' ? 'hidden' : 'hidden'}" data-panel="\${panelName}">
+                        <div class="text-center py-8 text-gray-500 dark:text-gray-400">No \${type} body</div>
                     </div>
                 \`;
             }
             
             const bodyStr = typeof body === 'string' ? body : formatJson(body);
+            const panelName = type === 'response' ? 'response' : 'body';
             
             return \`
-                <div class="tab-panel hidden" data-panel="body">
+                <div class="tab-panel \${type === 'response' ? 'hidden' : 'hidden'}" data-panel="\${panelName}">
                     <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Body Type: \${escapeHtml(bodyType || 'unknown')}</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">\${type === 'response' ? 'Response' : 'Request'} Body Type: \${escapeHtml(bodyType || 'unknown')}</span>
                             <button data-copy="\${escapeHtml(bodyStr)}" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1">
                                 <i data-lucide="copy" class="w-3 h-3"></i>
                                 Copy
@@ -838,14 +848,17 @@ export const DASHBOARD_HTML = `<!DOCTYPE html>
         }
 
         function renderQueryTab(queryParams, pathParams) {
-            const queryHtml = Object.entries(queryParams).map(([key, value]) => \`
+            const queryParamsObj = queryParams && typeof queryParams === 'object' ? queryParams : {};
+            const pathParamsObj = pathParams && typeof pathParams === 'object' ? pathParams : {};
+            
+            const queryHtml = Object.entries(queryParamsObj).map(([key, value]) => \`
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                     <td class="px-4 py-2 font-mono text-sm font-semibold">\${escapeHtml(key)}</td>
                     <td class="px-4 py-2 font-mono text-sm">\${escapeHtml(String(value))}</td>
                 </tr>
             \`).join('');
             
-            const paramsHtml = Object.entries(pathParams).map(([key, value]) => \`
+            const paramsHtml = Object.entries(pathParamsObj).map(([key, value]) => \`
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                     <td class="px-4 py-2 font-mono text-sm font-semibold">\${escapeHtml(key)}</td>
                     <td class="px-4 py-2 font-mono text-sm">\${escapeHtml(String(value))}</td>

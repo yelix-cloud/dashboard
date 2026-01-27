@@ -11,6 +11,14 @@ export interface EventData {
   duration?: string;
   status?: number;
   middlewares: MiddlewareData[];
+  headers?: Record<string, string>;
+  body?: unknown;
+  bodyType?: string;
+  queryParams?: Record<string, string | string[]>;
+  pathParams?: Record<string, string | string[]>;
+  responseBody?: unknown;
+  responseHeaders?: Record<string, string>;
+  responseBodyType?: string;
 }
 
 export interface MiddlewareData {
@@ -79,6 +87,14 @@ export interface RequestDetails {
     timestamp: string;
     started_at: string;
     url: string;
+    headers?: Record<string, string>;
+    body?: unknown;
+    body_type?: string;
+    query_params?: Record<string, string | string[]>;
+    path_params?: Record<string, string | string[]>;
+    response_body?: unknown;
+    response_headers?: Record<string, string>;
+    response_body_type?: string;
   };
   middleware: Array<{
     middleware_name: string;
@@ -126,6 +142,11 @@ export class DashboardStats {
       method: payload.method,
       pathname: payload.pathname,
       middlewares: [],
+      headers: payload.headers || {},
+      body: payload.body,
+      bodyType: payload.bodyType,
+      queryParams: payload.query,
+      pathParams: payload.params,
     };
 
     this.events.unshift(event);
@@ -142,6 +163,12 @@ export class DashboardStats {
     if (event) {
       event.duration = payload.duration;
       event.status = payload.status;
+      event.responseBody = payload.responseBody;
+      event.responseHeaders = payload.responseHeaders;
+      event.responseBodyType = payload.responseBodyType;
+      // Update path params and query from request.end (more reliable)
+      event.pathParams = payload.params || event.pathParams;
+      event.queryParams = payload.query || event.queryParams;
 
       // Update endpoint stats
       const key = `${payload.pathname}`;
@@ -343,6 +370,14 @@ export class DashboardStats {
         timestamp: new Date(event.timestamp).toISOString(),
         started_at: new Date(event.timestamp).toISOString(),
         url: event.pathname,
+        headers: event.headers,
+        body: event.body,
+        body_type: event.bodyType,
+        query_params: event.queryParams,
+        path_params: event.pathParams,
+        response_body: event.responseBody,
+        response_headers: event.responseHeaders,
+        response_body_type: event.responseBodyType,
       },
       middleware: event.middlewares.map((m, index) => ({
         middleware_name: m.name,

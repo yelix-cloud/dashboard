@@ -1,13 +1,13 @@
 {
   "name": "@yelix/dashboard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "exports": {
     ".": "./mod.ts",
     "./auth": "./src/auth.ts",
     "./middleware": "./src/middleware.ts"
   },
   "imports": {
-    "@yelix/hono": "jsr:@yelix/hono@^0.1.42",
+    "@yelix/hono": "jsr:@yelix/hono@^0.1.43",
     "hono": "npm:hono@^4.11.3"
   },
   "tasks": {

@@ -38,6 +38,19 @@ app.get("/api/users", (c) => {
   return c.json(users);
 });
 
+app.get("/api/users/:id", (c) => {
+  const id = Number(c.req.param("id"));
+  const user = users.find((u) => u.id === id);
+
+  if (!user) {
+    app.yelixLog(c, `User with id ${id} not found`, { id });
+    return c.json({ error: "User not found" }, 404);
+  }
+
+  app.yelixLog(c, `User with id ${id} fetched`, { user });
+  return c.json(user);
+});
+
 app.post("/api/users", async (c) => {
   const user = await c.req.json();
   if (!user?.name) {
@@ -71,3 +84,17 @@ console.log("🚀 Server running at http://localhost:8000");
 console.log("📊 Dashboard available at http://localhost:8000/dashboard");
 console.log("   Username: admin");
 console.log("   Password: supersecure123");
+
+// fetches
+async function fetches() {
+  const res1 = await fetch("http://localhost:8000/api/users");
+  const res2 = await fetch("http://localhost:8000/api/users/1");
+  const addJSON = { name: "New User" };
+  const resPost = await fetch("http://localhost:8000/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(addJSON),
+  });
+  const res3 = await fetch("http://localhost:8000/api/users/add-some?msg=hello");
+}
+fetches();
