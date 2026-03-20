@@ -1,15 +1,15 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@yelix/hono@~0.1.43": "0.1.43",
+    "jsr:@yelix/hono@~0.2.1": "0.2.1",
     "jsr:@yelix/openapi@~0.1.17": "0.1.18",
-    "npm:hono@^4.11.3": "4.11.4",
-    "npm:hono@^4.9.6": "4.11.4",
-    "npm:zod@^4.0.14": "4.3.5"
+    "npm:hono@^4.11.3": "4.12.8",
+    "npm:hono@^4.9.6": "4.12.8",
+    "npm:zod@^4.0.14": "4.3.6"
   },
   "jsr": {
-    "@yelix/hono@0.1.43": {
-      "integrity": "a8c71c59c15871e56621a8a23c0cfd7c5800c19d56e7527737155c97fa2ab8b3",
+    "@yelix/hono@0.2.1": {
+      "integrity": "b6f7cd9d4d7a98c506fd3208ac11e607effe7cd41bbc10bc1ac9e00bcc5153de",
       "dependencies": [
         "jsr:@yelix/openapi",
         "npm:hono@^4.9.6",
@@ -21,16 +21,16 @@
     }
   },
   "npm": {
-    "hono@4.11.4": {
-      "integrity": "sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA=="
+    "hono@4.12.8": {
+      "integrity": "sha512-VJCEvtrezO1IAR+kqEYnxUOoStaQPGrCmX3j4wDTNOcD1uRPFpGlwQUIW8niPuvHXaTUxeOUl5MMDGrl+tmO9A=="
     },
-    "zod@4.3.5": {
-      "integrity": "sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g=="
+    "zod@4.3.6": {
+      "integrity": "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="
     }
   },
   "workspace": {
     "dependencies": [
-      "jsr:@yelix/hono@~0.1.43",
+      "jsr:@yelix/hono@~0.2.1",
       "npm:hono@^4.11.3"
     ]
   }
